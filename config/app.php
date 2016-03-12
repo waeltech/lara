@@ -156,6 +156,13 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        /*
+        * another provider added by wael to use the form and html ....
+        */
+		Collective\Html\HtmlServiceProvider::class,
+
+        
+
     ],
 
     /*
@@ -201,6 +208,10 @@ return [
         'URL'       => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View'      => Illuminate\Support\Facades\View::class,
+		
+		// alias added by wael for the html form
+		'Form' => Collective\Html\FormFacade::class,
+		'Html' => Collective\Html\HtmlFacade::class,
 
     ],
 

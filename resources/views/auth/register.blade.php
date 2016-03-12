@@ -10,6 +10,23 @@
                     <form class="form-horizontal" role="form" method="POST" action="{{ url('/register') }}">
                         {!! csrf_field() !!}
 
+                        <div class="form-group{{ $errors->has('acctype') ? ' has-error' : '' }}">
+                            <label class="col-md-4 control-label">Account Type</label>
+
+                            <div class="col-md-6">
+                                <select name="acctype" class="form-control">
+                                    <option value="1">Job Seeker</option>
+                                    <option value="2"> business </option>
+                                </select>
+
+                                @if ($errors->has('acctype'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('acctype') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
                         <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
                             <label class="col-md-4 control-label">Name</label>
 
@@ -65,48 +82,6 @@
                                 @endif
                             </div>
                         </div>
-
-                        <div class="form-group{{ $errors->has('city') ? ' has-error' : '' }}">
-                            <label class="col-md-4 control-label">City</label>
-
-                            <div class="col-md-6">
-                                <input type="text" class="form-control" name="city" value="{{ old('city') }}">
-
-                                @if ($errors->has('name'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('city') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group{{ $errors->has('address') ? ' has-error' : '' }}">
-                            <label class="col-md-4 control-label">address</label>
-
-                            <div class="col-md-6">
-                                <input type="text" class="form-control" name="address" value="{{ old('address') }}">
-
-                                @if ($errors->has('address'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('address') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-                        <div class="form-group{{ $errors->has('phone') ? ' has-error' : '' }}">
-                            <label class="col-md-4 control-label">phone</label>
-
-                            <div class="col-md-6">
-                                <input type="text" class="form-control" name="phone" value="{{ old('phone') }}">
-
-                                @if ($errors->has('phone'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('phone') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
 
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">

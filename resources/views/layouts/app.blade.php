@@ -8,75 +8,62 @@
     <title>Laravel</title>
 
     <!-- Fonts -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" rel='stylesheet' type='text/css'>
-    <link href="https://fonts.googleapis.com/css?family=Lato:100,300,400,700" rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Droid+Serif|Ubuntu' rel='stylesheet' type='text/css'>
 
     <!-- Styles -->
+    
+    <link rel="stylesheet" href="{{ URL::asset('public/css/reset.css') }}" />
+    <link rel="stylesheet" href="{{ URL::asset('public/css/main.css') }}" />
 
-    {{-- <link href="{{ elixir('css/app.css') }}" rel="stylesheet"> --}}
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
-
-    <style>
-        body {
-            font-family: 'Lato';
-        }
-
-        .fa-btn {
-            margin-right: 6px;
-        }
-    </style>
 </head>
-<body id="app-layout">
-    <nav class="navbar navbar-default">
-        <div class="container">
-            <div class="navbar-header">
-
-                <!-- Collapsed Hamburger -->
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#spark-navbar-collapse">
-                    <span class="sr-only">Toggle Navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-
-                <!-- Branding Image -->
-                <a class="navbar-brand" href="/">
-                    Laravel
-                </a>
-            </div>
-
-            <div class="collapse navbar-collapse" id="spark-navbar-collapse">
-                <!-- Left Side Of Navbar -->
-                <ul class="nav navbar-nav">
-                    <li><a href="{{ url('/') }}">Home</a></li>
-                </ul>
-
-                <!-- Right Side Of Navbar -->
-                <ul class="nav navbar-nav navbar-right">
-                    <!-- Authentication Links -->
-                    @if (Auth::guest())
-                        <li><a href="{{ url('login') }}">Login</a></li>
-                        <li><a href="{{ url('register') }}">Register</a></li>
-                    @else
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                {{ Auth::user()->name }} <span class="caret"></span>
-                            </a>
-
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="{{ url('logout') }}"><i class="fa fa-btn fa-sign-out"></i>Logout</a></li>
-                            </ul>
-                    @endif
-                </ul>
-            </div>
+<body>
+    <header> 
+        <div id="logo">
+            <a class="Webtitle" href="{{ url('/') }}">
+                    jobs U1470153
+            </a> 
         </div>
-    </nav>
+        <div id="login">
+            <ul class="nav main">
+                <!-- Authentication Links -->
+                @if (Auth::guest())
+                    <li><a href="{{ url('/login') }}" class="large button green">Login</a></li>
+                    <li><a href="{{ url('/register') }}" class="large button blue">Register</a></li>
+                @else
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                            welcome : {{ Auth::user()->name }} <span class="caret"></span>
+                        </a>
 
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="{{ url('/logout') }}" class="large button red">Logout</a></li>
+                        </ul>
+                    </li>
+                @endif
+            </ul>
+        </div>
+    </header>
+    <div id='cssmenu'>
+
+                <!-- Left Side Of Navbar -->
+                <ul>
+                    <li><a href="{{ url('/home') }}">Home</a></li>
+                    <li><a href="{{ url('/jobs') }}">Jobs</a></li>
+                    <li class='last'><a href="{{ url('/design') }}">Design</a></li>
+                </ul>
+
+                
+    </div>
+    @if(Session::has('flash_message'))
+    <div class="alert alert-success">
+        {{ Session::get('flash_message') }}
+    </div>
+    @endif
     @yield('content')
-
+    <footer> <a href="http://www.waeltech.com">Copyright Wael Aziz U1470153 </a> </footer>
     <!-- JavaScripts -->
-    {{-- <script src="{{ elixir('js/app.js') }}"></script> --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    {{-- <script src="{{ elixir('js/app.js') }}"></script> --}}
 </body>
 </html>
