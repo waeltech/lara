@@ -3,51 +3,35 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use App\job;
-use LRedis;
-use Validator;
+use App\Http\Requests;
+use App\Job;
+use App\User;
+use App\Userjobs;
 use Session;
-use Input;
-use Redirect;
-
-
-
+use Auth;
+use Illuminate\Support\Facades\Input;
+use App\Skill;
+use App\JobSkill;
+use Validator;
 
 class jobsController extends Controller
 {
-
-    /**
-     * Redirect to index.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function redirect_to_index()
+    public function __construct()
     {
-        return redirect('jobs/index');
+        //
     }
-
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
+
     public function index()
     {
-        $jobs = job::orderBy('created_at', 'asc')->get();
-        return view('jobs/index', [
-            'jobs' => $jobs,]);
-    }
+        $jobs = Job::orderBy('id', 'desc')->paginate(5);
+        return View('jobs.index', compact('jobs'));
 
-    protected function validator(array $data)
-    {
-        return Validator::make($data, [
-            'name' => 'required|max:255',
-            'email' => 'required|email|max:255|unique:users',
-            'password' => 'required|confirmed|min:6',
-        ]);
     }
 
     /**
@@ -57,8 +41,8 @@ class jobsController extends Controller
      */
     public function create()
     {
-        return view('jobs/create');
-
+        $skills = Skill::all();
+        return view('jobs.create')->withSkills($skills);
     }
 
     /**
@@ -69,19 +53,28 @@ class jobsController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'title' => 'required',
-            'description' => 'required'
-        ]);
+         $this->validate($request,[
+                'title' => 'required|max:100',
+                'description'  => 'required|max:3000',
+                'salary'  => 'required|numeric|min:1|max:90000',
+                'location'  => 'required|max:100',
+                'skills'  => 'required',
+            ]);
+        // store in the database
+        $user = Auth::user()->id;
+        $job = new job;
+        $job->title = $request->title;
+        $job->description = $request->description;
+        $job->salary = $request->salary;
+        $job->location = $request->location;
+        $job->user_id = $user;
+        $job->save();
+        
+        $job->skills()->attach($request->skills);
+        $job->save();
 
-        $input = $request->all();
-
-        job::create($input);
-
-        Session::flash('flash_message', 'job successfully added!');
-
-
-        return redirect()->back();
+        Session::flash('success', 'The job was successfully save!');
+        return redirect()->route('job.show', $job->id);
     }
 
     /**
@@ -92,8 +85,9 @@ class jobsController extends Controller
      */
     public function show($id)
     {
-        $job = job::find($id);
-        return view('jobs/show', ['job'=> $job,]);
+        $job = Job::find($id);
+        $jobskills = JobSkill::where('job_id', $id)->get();
+        return view('jobs.show')->withJob($job)->withSkills($jobskills);
     }
 
     /**
@@ -104,12 +98,9 @@ class jobsController extends Controller
      */
     public function edit($id)
     {
-        
-        $item = job::find($id);
-        //$this->authorize('edit', $item);
-        return view('jobs/edit', [
-            'job' => $item,
-        ]);
+        $job = Job::find($id);
+        return view('jobs.edit')->withJob($job);
+
     }
 
     /**
@@ -119,22 +110,23 @@ class jobsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
-        $item = job::find($request->job_id);;
-
-        $item->title = $request->title;
-        $item->description = $request->description;
-        $item->salary = $request->salarymin;
-        $item->location = $request->location;
-        $item->contact_name = $request->contact_name;
-        $item->contact_email = $request->contact_email;
-
-        $item->update();
-        
-        Session::flash('flash_message', 'Task successfully added!');
-
-        return redirect()->back();
+         $this->validate($request, array(
+                'title' => 'required|max:255',
+                'description'  => 'required'
+            ));
+        // Save the data to the database
+        $job = Job::find($id);
+        $job->title = $request->input('title');
+        $job->description = $request->input('description');
+        $job->salary = $request->input('salary');
+        $job->location = $request->input('location');
+        $job->save();
+        // set flash data with success message
+        Session::flash('success', 'This job was successfully updated.');
+        // redirect with flash data to posts.show
+        return redirect()->route('job.show', $job->id);
     }
 
     /**
@@ -145,12 +137,92 @@ class jobsController extends Controller
      */
     public function destroy($id)
     {
-         // delete
-        $job = job::findOrFail($id);
-        $job->delete();
+        $post = Job::find($id);
+        $post->delete();
+        Session::flash('success', 'The job was successfully deleted.');
+        return redirect()->route('job.index');
+    }
+    public function assignIndex($id){
+        $job = Job::find($id);
+        return view('jobs.assign')->withJob($job);
+    }
+    public function assign(Request $request, $id){
+        $job = Job::find($id);
 
-        // redirect
-        Session::flash('flash_message', 'job successfully deleted!');
-        return Redirect::to('jobs');
+        $users = $request->input('users');
+        
+        if(is_array($users))
+        {
+           foreach ($users as $user) {
+                $assingUser = Userjobs::where('user_id', $user)
+                -> where('job_id', $id)
+                ->update(['accepted' => 1 ]);
+                echo 'job assigned' .$user;
+               
+
+           }
+        }
+        Session::flash('success', 'You have successfully assigned the job');
+        return view('jobs.assign')->withJob($job);
+    }
+
+    public function apply($id){
+        $job = Job::find($id);
+        $userid = Auth::user()->id;
+        try {
+            $job->user()->attach($userid);
+            Session::flash('success', 'You have been successfully applied for this job!');
+            return view('jobs.show')->withJob($job);
+
+        }
+        catch(\Exception $e) { 
+            Session::flash('danger', 'You have been already applied for this job! before');
+            return view('jobs.show')->withJob($job)->with('message', 'you have already applied for this job'); 
+        }
+        //$job->user()->attach($userid);
+    }
+    
+
+    public function approveIndex(){
+      $jobs = Job::where('approved', 0)
+               ->orderBy('title', 'desc')
+               ->get();
+        return view('jobs.approve')->withJobs($jobs); 
+    }
+
+    public function approve($id){
+
+        $job = Job::where('id', $id)
+               ->update(['approved' => 1]);
+         $jobs = Job::all();
+        Session::flash('success', 'Job have been approved');
+        return redirect()->back();
+        //return view('jobs.index')->withJobs($jobs);
+        
+    }
+
+    public function approveAll(Request $request){
+        
+        $JobsId = $request->input('SelectedJobs');
+        if(is_array($JobsId)){
+            foreach ($JobsId as $job) {
+            $job = Job::where('id', $job)
+               ->update(['approved' => 1]);
+            }
+        }
+
+        $jobs = Job::where('approved', 0)
+               ->orderBy('title', 'desc')
+               ->get();
+        Session::flash('success', 'Jobs have been approved');
+        return view('jobs.approve')->withJobs($jobs);
+        
+    }
+
+    public function myjobs(){
+        $userid = Auth::user()->id; 
+        $userjobs = Userjobs::where('user_id', $userid)->pluck('job_id');
+        $jobs = Job::simpleWhereIn_1($userjobs);
+        return view('jobs.myjobs')->withJobs($jobs);
     }
 }

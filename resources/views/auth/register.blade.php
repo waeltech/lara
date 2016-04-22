@@ -9,21 +9,21 @@
                 <div class="panel-body">
                     <form class="form-horizontal" role="form" method="POST" action="{{ url('/register') }}">
                         {!! csrf_field() !!}
-
+                        @if (count($errors) > 0)
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{!! $error !!}</li>
+                            @endforeach
+                        </ul>
+                         @endif              
                         <div class="form-group{{ $errors->has('acctype') ? ' has-error' : '' }}">
                             <label class="col-md-4 control-label">Account Type</label>
 
                             <div class="col-md-6">
-                                <select name="acctype" class="form-control">
-                                    <option value="1">Job Seeker</option>
+                                <select name="role" class="form-control">
+                                    <option value="3">Job Seeker</option>
                                     <option value="2"> business </option>
                                 </select>
-
-                                @if ($errors->has('acctype'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('acctype') }}</strong>
-                                    </span>
-                                @endif
                             </div>
                         </div>
 

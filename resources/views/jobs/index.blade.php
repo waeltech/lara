@@ -1,50 +1,88 @@
 @extends('layouts.app')
 
+
 @section('content')
-<div class="container">
-    <div class="row">
-        <div class="col-md-10 col-md-offset-1">
-            <div class="panel panel-default">
-                <div class="panel-heading">Jobs Page</div>
-                
-                <a href="create"><button class="large button green"> + Add New Job </button> </a>
 
-                <div class="panel-body">
-                    
-                    @if(count($jobs) === 0)
-                     <h1>  there is no jobs avilable at the moment</h1>
-                     @endif
 
-                     @if(count($jobs) > 0)
-                     <h3> We have found {{ count($jobs) }} jobs avilable </h3>
-                     @endif
-                     
-                     @foreach ($jobs as $job)
-                     <table>
-                         <tr>
-                                <!-- Vacancy Name -->
-                                <td class="table-text col-md-8">
-                                    {{ $job->title }}
+			
 
-                                </td>
-                                <td>
-                                    <a href="show/{{ $job->id }}"><button class="large button blue"> View </button> </a>
-                                    <a href="edit/{{ $job->id }}"><button class="large button blue"> Edit </button> </a>
-                                    <form action="delete/{{ $job->id }}" method="POST">
-                                        {{ csrf_field() }}
-                                        {{ method_field('DELETE') }}
 
-                                        <button class="large button red">Delete</button>
-                                    </form>
-                                </td>
-                        </tr>
-                            
-                    </table>            
-                    @endforeach
+	<div class="row">
+			<h1>All Jobs</h1>
+			<p>  Click view job to see the job details and then you can click applay </p>
+			<div class='center'>
+			@can ('create-job')
+				<a href="{{ route('job.create') }}" class="large button green"> + Create New Job</a>
+				@endcan
+			</div>
+	</div>
+    	
+		
 
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-@endsection
+	<div class="row">
+		<table class="table">
+			<thead>
+				<th>Title</th>
+				<th>description</th>
+				<th>Job Active</th>
+				<th> Actions</th>
+			</thead>
+
+			<tbody>
+				
+				@foreach ($jobs as $job)
+					
+					<tr>
+						<td>{{ $job->title }}</td>
+						<td>{{ substr($job->description, 0, 50) }}{{ strlen($job->description) > 50 ? "..." : "" }}</td>
+						</td>
+						<td> @if ($job->approved == 1)
+							Yes
+							@else
+							No
+							@endif
+						</td>
+						<td> 
+							
+							{!! Form::open(['route' => ['job.destroy', $job->id], 'method' => 'DELETE']) !!}
+
+							<a href="{{ route('job.show', $job->id) }}" class="large button green">View</a> 
+
+							@can ('edit-job')
+								<a href="{{ route('job.edit', $job->id) }}" class="large button blue">Edit</a> 
+							@endcan
+
+							@can ('delete-job')
+							{!! Form::submit('Delete', ['class' => 'large button red']) !!}
+							@endcan
+
+							@can ('assign-job')
+								<a href="{{ URL('job/assign', $job->id) }}" class="large button blue">Assign</a> 
+							@endcan
+							
+							{!! Form::close() !!}
+			                
+			                @can('approve-job')
+							{{ Form::open(['url' => 'job/approve/' . $job->id, 'method' => 'POST']) }}
+			                {{ Form::submit('Approve', ['class' => 'large button blue']) }}
+		                    {{ Form::close() }}
+		                     @endcan
+
+
+						</td>
+					</tr>
+
+				@endforeach
+
+			</tbody>
+		</table>
+
+		<div class="col-centered">
+			<div class="pagination"> {{ $jobs->links() }} </div>
+		</div>
+
+		
+	</div>
+
+
+@stop

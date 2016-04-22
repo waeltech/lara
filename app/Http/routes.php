@@ -1,5 +1,5 @@
 <?php
-use App\job;
+
 /*
 |--------------------------------------------------------------------------
 | Routes File
@@ -11,10 +11,13 @@ use App\job;
 |
 */
 
-//The routes for views/pages using the functions inside PagesController
+Route::get('design', 'HomeController@design');
 
 
-// if user logged in show home and message saying you already logged in
+
+Route::get('/', function () {
+    return view('welcome');
+});
 
 
 /*
@@ -29,76 +32,25 @@ use App\job;
 */
 
 
-// route to what admin can access 
-
-
-
-
-
-
-
-//Route::resource('jobs', 'jobsController');
-
-// ********************************************** to check 
-
-
-
-Route::group(['middleware' => 'user'], function () {
     Route::auth();
-    //Route::get('/home', 'HomeController@index');
-    Route::get('/jobs', 'jobsController@redirect_to_index');
-    Route::get('/jobs/index', 'jobsController@index');
-    Route::get('design','PagesController@design');
-    Route::get('/jobs/show/{id}', 'jobsController@show');
-    Route::get('/', 'PagesController@home');
-    Route::get('restricted','PagesController@restricted');
+
+
+    // route resource everything about job, include add, delete, edit, update, store, index - all function in Jobs controller
+    Route::resource('job', 'jobsController');
+
+    Route::get('job/assign/{id}', 'jobsController@assignIndex');
+    Route::post('job/assign/{id}', 'jobsController@assign');
+    
+    Route::post('job/{id}', 'jobsController@apply');
+
+    Route::get('job/approve', 'jobsController@approveIndex');
+    Route::post('job/approve/{id}', 'jobsController@approve'); //single approve from view 
+    Route::post('job/approve', 'jobsController@approveAll');		 // multi approve
+
+
+
+    Route::get('myjobs', 'jobsController@myjobs');
+
     Route::get('/home', 'HomeController@index');
-});
+    Route::resource('admin/users', 'UserController');
 
-    //Route::resource('admin', 'IsAdmin');
-Route::group(['middleware' => 'admin'], function()
-{
-    //Route::auth();
-    Route::get('/admin', function()
-    {
-        return view('admin.admin'); // can only access this if type == A
-    });
-
-    Route::get('/jobs/create', [
-    'middleware' => 'admin',
-    'uses'       => 'jobsController@create',
-    ]);
-    // update the job
-    Route::post('/jobs/edit', [
-    'middleware' => 'admin',
-    'uses'       => 'jobsController@update',
-    ]);
-
-    // DELETE
-    Route::delete('/jobs/delete/{id}', [
-        'middleware' => 'admin',
-        'uses'       => 'jobsController@destroy',
-    ]);
-    // edit job
-    Route::get('/jobs/edit/{id}', 'jobsController@edit');
-
-
-    // store the job
-    Route::post('/jobs/store', [
-        'middleware' => 'admin',
-        'uses'       => 'jobsController@store',
-    ]);
-
-});
-
-Route::group(['middleware' => 'business'], function()
-{
-    //Route::auth();
-    Route::get('/business', function()
-    {
-        return view('manager.biz'); // can only access this if type == A
-    });
-    Route::get('business','PagesController@business');
-
-
-});

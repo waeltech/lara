@@ -1,11 +1,15 @@
 body{
-	color:#666;
 	font-family:'Ubuntu', Arial, Helvetica, sans-serif; 
 	font-size:1em;
 	line-height:1.4em; 
 	font-weight:normal;
-	width: 80%;
+  height: 100%;
 	margin: 0 auto 0 auto;
+  padding-bottom: 22px;
+}
+html{
+  position: relative;
+  min-height: 100%;
 }
 h1, h2, h3, h4, h5, h6{
 	font-weight:normal;
@@ -19,45 +23,76 @@ a:visited,
 a:active,
 a:hover{color:#0099ff;}
 a:hover{ text-decoration:none;}
-p{ margin:0 0 1.5em;}
+p{ margin:0 0 1em;}
 .wrapper{
 	width: 92%; 
 	margin: 0 auto;
 }
+h1{
+  font-size: 1.5em;
+  text-align: center;
+}
 header{ 
 	padding:15px 0;
-	background:#333;
+	background-image: url("../images/banner.jpg");
+  //background:#333;
 	color:#ccc;
 	height: 100px;
+  background-size: cover;
 }
 
 footer{  
 	clear:both;
 	font-size:80%;
-	padding:20px 0;
+  margin-top: 20px;
 	background:#333;
 	color:#ccc;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 15px 0 15px 0;
+  left:0;
+
 }
 footer a{
 	display: block;
   text-align: center;
+  text-decoration: none;
+  color:lawngreen;
+}
+.center{
+  margin: 0px 0px 60px 60px;
 }
 #logo{
-	width: 70%;
+	width: 65%;
 	float: left;
-	//background-color: yellow;
-	padding: 20px;
+	color: #fff;
+  padding-left: 50px;
+  padding-top: 32px;
+}
+#logo a {
+  text-decoration: none;
+  color: lawngreen;
+  font-size: 3em;
+}
+#logo p {
+  color: white;
+  font-size: 1.6em;
 }
 #login {
-	//background-color: green;
-	width: 20%;
-	float:left;
-	padding: 20px;
+	width: 15%;
+	float:right;
+	padding: 15px;
 	color: white;
 }
 #login a{
 	text-decoration: none;
 	color: white;
+}
+#login P{
+  text-decoration: none;
+  color: white;
+  margin: 0 !important;
 }
 
 .container {  
@@ -169,7 +204,7 @@ footer a{
 }
 
 .button, .button:visited {
-	background: #222 url(overlay.png) repeat-x; 
+	background: #222; 
 	display: inline-block; 
 	padding: 5px 10px 6px; 
 	margin-right: 10px;
@@ -185,6 +220,8 @@ footer a{
 	cursor: pointer;
 	float:left;
 }
+
+
  
 .button:hover							{ background-color: #111; color: #fff; }
 .button:active							{ top: 1px; }
@@ -196,11 +233,15 @@ footer a{
 .blue.button:hover							{ background-color: #2575cf; }
 
 
+
 label {
 display:inline-block;
 max-width:50%;
 margin-bottom:5px;
 font-weight:700;
+}
+.textarea{
+  height: 250px !important;
 }
 
 output {
@@ -339,4 +380,114 @@ height:34px;
 line-height:34px;
 text-align:center;
 pointer-events:none;
+}
+
+table { 
+  width: 95%; 
+  border-collapse: collapse; 
+  margin: 0px auto 50px auto;
+}
+/* Zebra striping */
+tr:nth-of-type(odd) { 
+  background: #eee; 
+}
+th { 
+  background: #333; 
+  color: white; 
+  font-weight: bold; 
+}
+td, th { 
+  padding: 6px; 
+  text-align: left; 
+}
+
+.pagination{
+  display: block;
+  padding: 2px;
+  margin: 0 auto;
+
+}
+
+.pagination ul{
+margin: 0;
+padding: 0;
+text-align: left; /*Set to "right" to right align pagination interface*/
+font-size: 22px;
+}
+
+.pagination li{
+list-style-type: none;
+display: inline;
+padding-bottom: 1px;
+}
+
+.pagination a, .pagination a:visited{
+padding: 0 5px;
+border: 1px solid #9aafe5;
+text-decoration: none; 
+color: #2e6ab1;
+}
+
+.pagination a:hover, .pagination a:active{
+border: 1px solid #2b66a5;
+color: #000;
+background-color: #FFFF80;
+}
+
+.pagination a.currentpage{
+background-color: #2e6ab1;
+color: #FFF !important;
+border-color: #2b66a5;
+font-weight: bold;
+cursor: default;
+}
+
+.pagination a.disablelink, .pagination a.disablelink:hover{
+background-color: white;
+cursor: default;
+color: #929292;
+border-color: #929292;
+font-weight: normal !important;
+}
+
+.pagination a.prevnext{
+font-weight: bold;
+}
+
+.success {
+color: #4F8A10;
+background-color: #DFF2BF;
+text-align: center;
+font-size: 1.5em;
+height: 30px;
+padding: 15px;
+}
+
+.error {
+color: #D8000C;
+background-color: #FFBABA;
+text-align: center;
+font-size: 1.5em;
+height: 30px;
+padding: 15px;
+}
+
+.row{
+  padding: 10px 0px 0px 35px;
+  margin-bottom: 100px;
+}
+
+.col-centered{
+    width: 300px;
+    margin: 0 auto;
+    padding-left: 158px;
+}
+.image{
+  margin: 0 auto;
+}
+.col{
+  
+}
+.row li{
+  list-style: square;
 }

@@ -1,52 +1,55 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="row">
-        <div class="col-md-10 col-md-offset-1">
-            <div class="panel panel-default">
-                <div class="panel-heading">Homepage</div>
 
-                <div class="panel-body">
-                    {!! Form::open(['url'=>'jobs/edit', 'method'=>'POST']) !!}
-                        <input type="hidden" id="job_id" name="job_id" value="{{ $job->id }}" /> 
-                        <div class="form-group">
-                            {!! Form::label('title', 'Title:', ['class' => 'control-label']) !!}
-                            {!! Form::text('title', $job->title, ['class' => 'form-control']) !!}
-                        </div>
+	<div class="row">
+		{!! Form::model($job, ['route' => ['job.update', $job->id], 'method' => 'PUT']) !!}
+		<div class="col-md-8">
+			{{ Form::label('Title', 'Title:') }}
+			{{ Form::text('title', null, ["class" => 'form-control input-lg']) }}
+			
+			{{ Form::label('Description', "Description:", ['class' => 'form-spacing-top']) }}
+			{{ Form::textarea('description', null, ['class' => 'form-control']) }}
 
-                        <div class="form-group">
-                            {!! Form::label('description', 'Description:', ['class' => 'control-label']) !!}
-                            {!! Form::textarea('description', $job->description, ['class' => 'form-control']) !!}
-                        </div>
+			{{ Form::label('Salary', "Salary:", ['class' => 'form-spacing-top']) }}
+			{{ Form::textarea('salary', null, ['class' => 'form-control']) }}
 
-                        <div class="form-group">
-                            {!! Form::label('salary', 'Salary:', ['class' => 'control-label']) !!}
-                            {!! Form::text('salary', $job->salary, ['class' => 'form-control']) !!}
-                        </div>
+			{{ Form::label('Location', "Location:", ['class' => 'form-spacing-top']) }}
+			{{ Form::textarea('location', null, ['class' => 'form-control']) }}
+			@can('approve-job')
+			{{ Form::label('Active', "Active:", ['class' => 'form-spacing-top']) }}
+			{{ Form::textarea('approved', null, ['class' => 'form-control']) }}
+			@endcan
+		</div>
 
-                        <div class="form-group">
-                            {!! Form::label('location', 'Location:', ['class' => 'control-label']) !!}
-                            {!! Form::text('location', $job->location, ['class' => 'form-control']) !!}
-                        </div>
+		<div class="col-md-4">
+			<div class="well">
+				<dl class="dl-horizontal">
+					<dt>Created At:</dt>
+					<dd>{{ date('M j, Y h:ia', strtotime($job->created_at)) }}</dd>
+				</dl>
 
-                        <div class="form-group">
-                            {!! Form::label('contactn', 'Contact Name:', ['class' => 'control-label']) !!}
-                            {!! Form::text('contact_name', $job->contact_name, ['class' => 'form-control']) !!}
-                        </div>
+				<dl class="dl-horizontal">
+					<dt>Last Updated:</dt>
+					<dd>{{ date('M j, Y h:ia', strtotime($job->updated_at)) }}</dd>
+				</dl>
+				
 
-                        <div class="form-group">
-                            {!! Form::label('contacte', 'Contact E-mail:', ['class' => 'control-label']) !!}
-                            {!! Form::text('contact_email', $job->contact_email, ['class' => 'form-control']) !!}
-                        </div>
+				<hr>
+				<div class="row">
+					<div class="col-sm-6">
+						{!! Html::linkRoute('job.index', 'Cancel', array(), array('class' => 'large button red')) !!}
+					</div>
+					<div class="col-sm-6">
+						{{ Form::submit('Save Changes', ['class' => 'large button green']) }}
+					</div>
+				</div>
 
-                        {!! Form::submit('Save Changes', ['class' => 'large button green']) !!}
+				
 
-                    {!! Form::close() !!}
+			</div>
+		</div>
+		{!! Form::close() !!}
+	</div>	<!-- end of .row (form) -->
 
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-@endsection
+@stop

@@ -18,11 +18,16 @@ class CreateJobsTable extends Migration
         $table->increments('id');
         $table->string('title',150);
         $table->string('description',500);
-        $table->string('contact_name')->nullable();
-        $table->string('contact_email')->nullable();
-        $table->string('salary',3);
+        $table->string('salary',6);
         $table->string('location',100);
-        $table->timestamps('updated_at');
+        $table->dateTime('startingdate');
+        $table->dateTime('endingdate');
+        $table->integer('user_id');
+        $table->integer('approved');
+        $table->timestamps();
+        $table->softDeletes();
+
+
     });
 
     }
